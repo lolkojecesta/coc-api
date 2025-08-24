@@ -1,4 +1,5 @@
 const express = require("express");
+const fetch = require("node-fetch"); // <-- Re-add this line
 require("dotenv").config();
 
 const app = express();
@@ -39,4 +40,3 @@ app.get("/player/:tag", async (req, res) => {
 });
 
 app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
-
