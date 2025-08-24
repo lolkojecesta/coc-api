@@ -1,5 +1,6 @@
 const express = require("express");
 require("dotenv").config();
+const fetch = require("node-fetch");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -21,7 +22,17 @@ app.get("/player/:tag", async (req, res) => {
     }
 
     const data = await response.json();
-    res.json(data);
+
+    // ✅ Only return clean, relevant data
+    const filteredData = {
+      name: data.name || "Unknown",
+      tag: data.tag || req.params.tag,
+      trophies: data.trophies || 0,
+      townHallLevel: data.townHallLevel || "Unknown",
+      clan: data.clan ? data.clan.name : "No clan"
+    };
+
+    res.json(filteredData);
 
   } catch (error) {
     res.status(500).json({ error: "Server error", details: error.message });
@@ -29,3 +40,4 @@ app.get("/player/:tag", async (req, res) => {
 });
 
 app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+
