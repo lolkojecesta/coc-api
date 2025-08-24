@@ -1,5 +1,4 @@
 const express = require("express");
-const fetch = require("node-fetch"); // <-- This line is crucial
 require("dotenv").config();
 
 const app = express();
@@ -23,6 +22,7 @@ app.get("/player/:tag", async (req, res) => {
 
     const data = await response.json();
 
+    // ✅ Only return clean, relevant data
     const filteredData = {
       name: data.name || "Unknown",
       tag: data.tag || req.params.tag,
@@ -39,3 +39,4 @@ app.get("/player/:tag", async (req, res) => {
 });
 
 app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+
