@@ -1,6 +1,4 @@
-    // server.js - Updated Express.js server file on Render
 const express = require("express");
-const fetch = require("node-fetch"); // If you're using Node <18, keep this. For Node 18+ it's built-in.
 require("dotenv").config();
 
 const app = express();
@@ -40,7 +38,7 @@ app.get("/player/:tag", async (req, res) => {
   }
 });
 
-// Clan War Log endpoint (cleaned up)
+// Clan War Log endpoint
 app.get("/clan/warlog/:tag", async (req, res) => {
   try {
     const tag = encodeURIComponent(`#${req.params.tag}`);
@@ -58,7 +56,6 @@ app.get("/clan/warlog/:tag", async (req, res) => {
 
     const data = await response.json();
 
-    // Limit results for speed
     const wars = data.items.slice(0, 10).map(war => ({
       result: war.result,
       teamSize: war.teamSize,
@@ -74,6 +71,5 @@ app.get("/clan/warlog/:tag", async (req, res) => {
   }
 });
 
-    
 app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
 
