@@ -56,10 +56,12 @@ app.get("/clan/warlog/:tag", async (req, res) => {
 
     const data = await response.json();
 
+    // Format only useful data
     const wars = data.items.slice(0, 10).map(war => ({
       result: war.result,
       teamSize: war.teamSize,
-      attacksPerMember: war.attacksPerMember,
+      attacks: war.clan.attacks ?? 0,
+      opponentAttacks: war.opponent.attacks ?? 0,
       clanStars: war.clan.stars,
       opponentStars: war.opponent.stars
     }));
