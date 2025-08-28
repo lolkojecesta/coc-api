@@ -75,20 +75,17 @@ app.get("/clan/warlog/:tag", async (req, res) => {
 
 app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
 
-    // Current War Info endpoint
+// Current War Info endpoint (simplified)
 app.get("/clan/currentwar/:tag", async (req, res) => {
   try {
     const tag = encodeURIComponent(`#${req.params.tag}`);
-    const url = `https://api.clashofclans.com/v1/clans/${tag}/currentwar`;
-
-    const response = await fetch(url, {
+    const response = await fetch(`https://api.clashofclans.com/v1/clans/${tag}/currentwar`, {
       headers: {
-        Authorization: `Bearer ${API_KEY}`,
-        Accept: "application/json",
-      },
+        "Authorization": `Bearer ${API_KEY}`,
+        "Accept": "application/json"
+      }
     });
 
-    // If API returns an error
     if (!response.ok) {
       const errorData = await response.json();
       return res.status(response.status).json(errorData);
@@ -96,42 +93,18 @@ app.get("/clan/currentwar/:tag", async (req, res) => {
 
     const data = await response.json();
 
-    // Some wars may be "notInWar"
-    if (!data.clan || !data.clan.members) {
-      return res.json({ state: data.state || "notInWar" });
-    }
-
-    // Build clean response
+    // Extract only what we need: war state + names of our clan members
     const result = {
       state: data.state,
-      teamSize: data.teamSize,
-      startTime: data.startTime,
-      endTime: data.endTime,
-      clanName: data.clan.name,
-      members: data.clan.members.map((m) => ({
-        name: m.name,
-        tag: m.tag,
-        townhall: m.townhallLevel,
-        mapPosition: m.mapPosition,
-        attacks: m.attacks ? m.attacks.length : 0,
-        stars: m.attacks?.reduce((sum, atk) => sum + atk.stars, 0) || 0,
-        destruction:
-          m.attacks?.reduce(
-            (sum, atk) => sum + atk.destructionPercentage,
-            0
-          ) || 0,
-      })),
+      members: data.clan.members.map(member => member.name)
     };
 
     res.json(result);
+
   } catch (error) {
-    res.status(500).json({
-      error: "Server error",
-      details: error.message,
-    });
+    res.status(500).json({ error: "Server error", details: error.message });
   }
 });
-
 
 
     catch (error) {
