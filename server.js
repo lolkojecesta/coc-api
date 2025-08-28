@@ -75,7 +75,7 @@ app.get("/clan/warlog/:tag", async (req, res) => {
 
 app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
 
-// Current War Info endpoint (simplified)
+// Current War Info endpoint (simple version)
 app.get("/clan/currentwar/:tag", async (req, res) => {
   try {
     const tag = encodeURIComponent(`#${req.params.tag}`);
@@ -93,22 +93,24 @@ app.get("/clan/currentwar/:tag", async (req, res) => {
 
     const data = await response.json();
 
-    // Extract only what we need: war state + names of our clan members
-    const result = {
-      state: data.state,
-      members: data.clan.members.map(member => member.name)
-    };
+    // Just log everything we need for debugging
+    console.log("War state:", data.state);
+    console.log("Members:");
 
-    res.json(result);
+    // Print all members' names to the console
+    data.clan.members.forEach(member => {
+      console.log(member.name);
+    });
+
+    // Send back only state + names to the client
+    res.json({
+      state: data.state,
+      members: data.clan.members.map(m => m.name)
+    });
 
   } catch (error) {
+    console.error("Error:", error.message);
     res.status(500).json({ error: "Server error", details: error.message });
-  }
-});
-
-
-    catch (error) {
-    res.status(500).json({ error: "Server error", details: error.message });
-  }
+      }
 });
 
